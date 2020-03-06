@@ -8,7 +8,7 @@ export class RedbullDiscountController {
 
     @Get()
     lol(){
-        this.redbullDiscountService.test();
+        return this.redbullDiscountService.updateInfo().subscribe();
     }
 
 }
