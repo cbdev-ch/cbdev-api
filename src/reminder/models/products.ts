@@ -1,4 +1,4 @@
-import { model, Schema, Document } from "mongoose";
+import { model, Schema } from 'mongoose';
 
 export default model('Product', new Schema({
 
@@ -9,6 +9,6 @@ export default model('Product', new Schema({
     notAvailableSearchString: {type: String},
     isDiscount: {type: Boolean},
     isAvailable: {type: Boolean},
-    fileName: {type: String}
+    url: {type: String}
 
-}));
+}, { collection: 'Product' }));

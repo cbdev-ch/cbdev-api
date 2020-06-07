@@ -8,7 +8,12 @@ export class RedbullDiscountController {
 
     @Get()
     lol(){
-        return this.redbullDiscountService.updateInfo().subscribe();
+        return this.redbullDiscountService.updateInfo();
+    }
+
+    @Get('test')
+    lol2(){
+        return this.redbullDiscountService.test();
     }
 
 }
