@@ -20,7 +20,7 @@ export class DiscountsService {
         return this.productModel.distinct("category");
     }
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_HOUR)
     async updateInfo(){
         this.productModel.find({active: true}, (error, products) => {
             if (error) {
@@ -34,6 +34,8 @@ export class DiscountsService {
                             if (product.notAvailableSearchString) {
                                 product.isAvailable = !response.data.includes(product.notAvailableSearchString);
                             }
+
+                            product.updatedAt = new Date();
 
                             product.save();
                         }
