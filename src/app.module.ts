@@ -14,7 +14,7 @@ import { join } from 'path';
     load: [configuration]
   }), Pdf2imgModule, ServeStaticModule.forRoot({
     rootPath: join(__dirname, '..', 'uploads')
-  })],
+  }), ReminderModule],
   controllers: [],
   providers: [],
 })

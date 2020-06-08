@@ -51,7 +51,7 @@ export class RedbullDiscountService {
                         console.log(err);
                     } else {
                         products.forEach( (product) => {
-                            console.log(product.storeName);
+                            console.log(product.url);
                         })
                     }
 
