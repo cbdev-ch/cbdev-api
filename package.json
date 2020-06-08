@@ -30,7 +30,6 @@
     "@types/mongoose": "^5.7.22",
     "dotenv": "^8.2.0",
     "mongoose": "^5.9.6",
-    "pdf-poppler": "^0.2.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.5"
