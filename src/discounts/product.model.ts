@@ -2,6 +2,7 @@ import { model, Schema, Document } from 'mongoose';
 
 export const ProductSchema =  new Schema({
     category: {type: String},
+    categoryDisplayName: {type: String},
     storeName: {type: String},
     productName: {type: String},
     productType: {type: String},
@@ -18,6 +19,7 @@ export const ProductSchema =  new Schema({
 export interface Product extends Document {
     id: string;
     category: string;
+    categoryDisplayName: string;
     storeName: string;
     productName: string;
     productType: string;

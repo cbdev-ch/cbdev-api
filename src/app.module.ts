@@ -7,7 +7,6 @@ import { join } from 'path';
 import { DiscountsModule } from './discounts/discounts.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
-
 @Module({
   imports: [ ConfigModule.forRoot({
     isGlobal: true,
