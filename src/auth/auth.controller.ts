@@ -1,11 +1,11 @@
-import { Controller, Post, Get, Param, Query, Redirect, Res, ForbiddenException, UseGuards, Req, ImATeapotException, Body, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
-import { AuthenticationService } from './authentication.service';
-import { Response, Request } from 'express';
-import { map, catchError } from 'rxjs/operators';
+import { Controller, Get, Res, Query, InternalServerErrorException, Post, ForbiddenException, Body } from '@nestjs/common';
+import { AuthService } from './auth.service';
+import { map } from 'rxjs/operators';
+import { Response } from 'express';
 
 @Controller('auth')
-export class AuthenticationController {
-    constructor(private authService: AuthenticationService) {
+export class AuthController {
+    constructor(private authService: AuthService) {
     }
 
     @Get('authorize')
@@ -34,11 +34,7 @@ export class AuthenticationController {
         return this.authService.login(code).pipe(
             map((result) => {
                 return { 'access_token': result };
-            }),
-            catchError((error, caught) => {
-                console.log(error);
-                return caught;
             })
-        )
+        );
     }
 }

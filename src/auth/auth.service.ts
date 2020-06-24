@@ -1,15 +1,13 @@
-import { Injectable, HttpServer, HttpService, BadRequestException, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, HttpService, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { stat } from 'fs';
-import { map, catchError, flatMap } from 'rxjs/operators';
-import { of } from 'rxjs';
-import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { UserService } from 'src/user/user.service';
+import { flatMap, map, catchError } from 'rxjs/operators';
 import { AxiosResponse } from 'axios';
+import qs from 'qs';
 
 @Injectable()
-export class AuthenticationService {
-
+export class AuthService {
     private discordEndpoint: string;
     private discordAuthEndpoint: string;
     private discordClientId: string;
@@ -62,21 +60,19 @@ export class AuthenticationService {
 
     login(code: string) {
         // Get token from discord
-        return this.http.post(this.discordAuthEndpoint + '/token', {
+        return this.http.post(this.discordAuthEndpoint + '/token', qs.stringify({
             'client_id': this.discordClientId,
             'client_secret': this.discordClientSecret,
             'grant_type': 'authorization_code',
             'code': code,
             'redirect_uri': this.config.get('baseUrl') + '/auth/callback',
             'scope': 'identify'
-
-        }, {
+        }), {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).pipe(
             flatMap((response, index)=> {
-                console.log('mami');
                 let token = response.data['access_token'];
                 let expiresIn = response.data['expires_in'];
                 let refreshToken = response.data['refresh_token'];
@@ -88,7 +84,6 @@ export class AuthenticationService {
                     }
                 }).pipe(
                     map((response) => {
-                        console.log('lulm');
                         let userId = response.data['id'];
                         let userName = response.data['username'];
 
@@ -99,23 +94,22 @@ export class AuthenticationService {
                         }, {
                             subject: userId
                         });
-                    })/*,
+                    }),
                     catchError((error, caught) => {
-                        console.log(error);
-                        return caught;
-                    })*/
+                        throw new InternalServerErrorException();
+                    })
                 )
-            })/*,
+            }),
             catchError((error, caught) => {
                 let response = <AxiosResponse>error['response'];
 
                 if (response.data['error'] === 'invalid_grant') {
-                    return caught;
+                    throw new UnauthorizedException();
                 }
 
                 console.log(error);
-                return caught;
-            })*/
+                throw new InternalServerErrorException();
+            })
         );
     }
 }

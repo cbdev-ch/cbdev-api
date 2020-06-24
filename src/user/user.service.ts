@@ -1,11 +1,14 @@
 import { Injectable, HttpModule, HttpServer, HttpService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { map, catchError } from 'rxjs/operators';
+import { InjectModel } from '@nestjs/mongoose';
+import { User } from './user.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
 
-    constructor(private config: ConfigService, private http: HttpService) {
+    constructor(@InjectModel(User.name) private userModel: Model<User>, private config: ConfigService, private http: HttpService) {
     }
 
     getUserByDiscordToken(discordToken: string) {
