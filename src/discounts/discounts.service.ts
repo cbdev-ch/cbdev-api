@@ -4,12 +4,14 @@ import * as mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './product.model';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
+import { AxiosResponse } from 'axios';
 
 @Injectable()
 export class DiscountsService {
 
     constructor(@InjectModel('Product') private readonly productModel: Model<Product>, private httpService: HttpService) {
+        this.updateInfo();
     }
 
     async getAll(category: string): Promise<Product[]> {
@@ -27,7 +29,18 @@ export class DiscountsService {
                 console.log(error);
             } else {
                 products.forEach((product) => {
-                    this.httpService.get(product.url).subscribe((response) => {
+                    this.httpService.get(product.url).pipe(
+                        catchError((error, caught) => {
+                            let response: AxiosResponse = error.response;
+
+                            if (response.status === 404) {
+                                return caught;
+                            }
+
+                            console.log(error);
+                            return caught;
+                        })
+                    ).subscribe((response) => {
                         if (response.status === 200) {
                             product.isDiscount = response.data.includes(product.discountSearchString);
                         
