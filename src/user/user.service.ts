@@ -8,7 +8,7 @@ export class UserService {
     constructor(private config: ConfigService, private http: HttpService) {
     }
 
-    getUser(discordToken: string) {
+    getUserByDiscordToken(discordToken: string) {
         return this.http.get(this.config.get('discordEndpoint') + '/users/@me', {
             headers: {
                 'Authorization': 'Bearer ' + discordToken
