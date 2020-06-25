@@ -1,7 +1,7 @@
 import { Module, HttpModule } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
@@ -19,7 +19,7 @@ import { JwtAuthStrategy } from './jwt-auth.strategy';
         secret: process.env.JWT_SECRET,
         signOptions: { expiresIn: process.env.JWT_EXPIRATION_TIME },
     }),
-    UserModule
+    UserModule,
   ],
   providers: [
     AuthService,

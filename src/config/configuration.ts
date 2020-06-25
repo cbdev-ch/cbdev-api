@@ -1,4 +1,5 @@
 import { prototype } from "module";
+import { type } from "os";
 
 const env = process.env;
 

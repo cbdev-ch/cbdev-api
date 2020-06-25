@@ -5,27 +5,35 @@ import { UserService } from 'src/user/user.service';
 import { flatMap, map, catchError } from 'rxjs/operators';
 import { AxiosResponse } from 'axios';
 import qs from 'qs';
+import { InjectModel } from '@nestjs/mongoose';
+import { LoginAttempt } from './login-attempt.schema';
+import { Model } from 'mongoose';
+import moment from 'moment';
+import { from } from 'rxjs';
 
 @Injectable()
 export class AuthService {
+
+    private readonly intergrityExpirationTime: number = 60; // miliseconds until a login attempt expires
+
     private discordEndpoint: string;
     private discordAuthEndpoint: string;
     private discordClientId: string;
     private discordClientSecret: string;
 
-    private loginAttempts: {[intergrity: string]: { callbackUri: string }};
-
-    constructor(private config: ConfigService, private http: HttpService, private jwtService: JwtService, private userService: UserService) {
+    constructor(@InjectModel(LoginAttempt.name) private loginAttemptModel: Model<LoginAttempt>, private config: ConfigService, private http: HttpService, private jwtService: JwtService, private userService: UserService) {
         this.discordEndpoint = this.config.get('discordEndpoint');
         this.discordAuthEndpoint = this.discordEndpoint + '/oauth2';
         this.discordClientId = this.config.get('discordClientId');
         this.discordClientSecret = this.config.get('discordClientSecret');
-
-        this.loginAttempts = {};
     }
 
     getLoginUri(integrity: string, callbackUri: string) {
-        this.loginAttempts[integrity] = { callbackUri };
+        new this.loginAttemptModel({
+            integrity,
+            callbackUri,
+            expiresAt: moment().add(60, "seconds").toDate()
+        });
 
         let url = new URL(this.discordAuthEndpoint + '/authorize');
         url.searchParams.set('response_type', 'code');
@@ -38,7 +46,7 @@ export class AuthService {
     }
 
     getSuccessUri(integrity: string, code: string) {
-        let url = new URL(this.loginAttempts[integrity].callbackUri);
+        let url = new URL(this.loginAttemptModel[integrity].callbackUri);
         url.searchParams.set('state', integrity);
         url.searchParams.set('code', code);
 
@@ -46,7 +54,7 @@ export class AuthService {
     }
 
     getFailureUri(integrity: string, error: string, errorDescription?: string) {
-        let url = new URL(this.loginAttempts[integrity].callbackUri);
+        let url = new URL(this.loginAttemptModel[integrity].callbackUri);
         url.searchParams.set('state', integrity);
         url.searchParams.set('error', error);
         url.searchParams.set('error_description', errorDescription);
@@ -55,7 +63,7 @@ export class AuthService {
     }
 
     validateIntegrity(integrity: string) {
-        return integrity in this.loginAttempts;
+        return from(this.loginAttemptModel.exists({ integrity }));
     }
 
     login(code: string) {

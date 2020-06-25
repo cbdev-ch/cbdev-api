@@ -14,19 +14,26 @@ export class AuthController {
     }
 
     @Get('callback')
-    callback(@Res() response: Response, @Query('state') integrity: string, @Query('code') code?: string, @Query('error') error?: string, errorDescription?: string) {
-        if (this.authService.validateIntegrity(integrity)) {
-            if (error) {
+    async callback(@Res() response: Response, @Query('state') integrity: string, @Query('code') code?: string, @Query('error') error?: string, errorDescription?: string) {
+        this.authService.validateIntegrity(integrity).pipe(
+            map((valid) => {
+                if (!valid) {
+                    throw new ForbiddenException();
+                }
+
+                if (!error) {
+                    return response.redirect(this.authService.getSuccessUri(integrity, code));
+                }
+
+
                 if (error === 'access_denied') {
                     return response.redirect(this.authService.getFailureUri(integrity, error, errorDescription));
                 }
+
                 console.log(error);
                 throw new InternalServerErrorException();
-            } else {
-                return response.redirect(this.authService.getSuccessUri(integrity, code));
-            }
-        }
-        throw new ForbiddenException();
+            })
+        );
     }
 
     @Post('token')

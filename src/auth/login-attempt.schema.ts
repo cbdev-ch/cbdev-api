@@ -1,4 +1,5 @@
-import { Schema, Prop } from "@nestjs/mongoose";
+import { Schema, Prop, SchemaFactory } from "@nestjs/mongoose";
+import { Document } from "mongoose";
 
 @Schema()
 export class LoginAttempt extends Document {
@@ -8,9 +9,11 @@ export class LoginAttempt extends Document {
     @Prop()
     callbackUri: string;
 
-    @Prop()
+    @Prop({ type: Date, default: new Date() })
     triedAt: Date;
 
-    @Prop()
+    @Prop({ type: Date })
     expiresAt: Date;
 }
+
+export const LoginAttemptSchema = SchemaFactory.createForClass(LoginAttempt);
