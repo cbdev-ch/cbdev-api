@@ -12,7 +12,7 @@ import moment from 'moment';
 import { from, Observable } from 'rxjs';
 import { use } from 'passport';
 import { Interval } from '@nestjs/schedule';
-import { UserDocument } from 'src/user/user.schema';
+import { UserDoc } from 'src/user/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -24,7 +24,7 @@ export class AuthService {
     private discordClientId: string;
     private discordClientSecret: string;
 
-    constructor(@InjectModel(LoginAttempt.name) private loginAttemptModel: Model<LoginAttempt>, @InjectModel(UserDocument.name) private userModel: Model<UserDocument>,
+    constructor(@InjectModel(LoginAttempt.name) private loginAttemptModel: Model<LoginAttempt>, @InjectModel(UserDoc.name) private userModel: Model<UserDoc>,
     private config: ConfigService, private http: HttpService, private jwtService: JwtService, private userService: UserService) {
 
         this.discordEndpoint = this.config.get('discordEndpoint');

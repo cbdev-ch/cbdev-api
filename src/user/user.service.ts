@@ -2,17 +2,17 @@ import { Injectable, HttpModule, HttpServer, HttpService, InternalServerErrorExc
 import { ConfigService } from '@nestjs/config';
 import { map, catchError, flatMap } from 'rxjs/operators';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserDocument } from './user.schema';
 import { Model } from 'mongoose';
 import { from, Observable } from 'rxjs';
 import { SchedulerRegistry, Interval } from '@nestjs/schedule';
 import moment from 'moment';
-import User from './user.model';
+import { User } from './user.model';
+import { UserDoc } from './user.schema';
 
 @Injectable()
 export class UserService {
 
-    constructor(@InjectModel(UserDocument.name) private userModel: Model<UserDocument>, private config: ConfigService, private http: HttpService) {
+    constructor(@InjectModel(UserDoc.name) private userModel: Model<UserDoc>, private config: ConfigService, private http: HttpService) {
     }
 
     async getByDiscordId(discordId: string): Promise<User> {
@@ -24,14 +24,13 @@ export class UserService {
             }
         }).pipe(
             map((response) => {
-                return {
+                return new User({
                     id: discordId,
                     username: response.data['username'],
                     avatarUri: this.config.get('discordCDN') + '/avatars/' + discordId + '/' + response.data['avatar'] + '.png',
-                }
+                });
             }),
             catchError((error, caught) => {
-                console.log('3');
                 console.log(error);
                 throw new InternalServerErrorException();
             })

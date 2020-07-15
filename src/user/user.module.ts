@@ -4,14 +4,14 @@ import { ConfigService } from '@nestjs/config';
 import { UserController } from './user.controller';
 import { PassportModule } from '@nestjs/passport';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserDocument, UserSchema } from './user.schema';
+import { UserDoc, UserSchema } from './user.schema';
 
 @Module({
   imports: [
     HttpModule,
     PassportModule,
     MongooseModule.forFeature([{
-      name: UserDocument.name, schema: UserSchema, collection: 'users'
+      name: UserDoc.name, schema: UserSchema, collection: 'users'
     }]),
   ],
   providers: [
