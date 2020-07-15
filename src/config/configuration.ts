@@ -13,4 +13,5 @@ export default () => ({
     : env.API_PROTOCOL + "://" + env.API_HOST + ":" + env.API_PORT)
     + "/" + env.VERSION_PREFIX,
     discordEndpoint: env.DISCORD_ENDPOINT,
+    discordCDN: env.DISCORD_CDN,
 });

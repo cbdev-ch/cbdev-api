@@ -15,33 +15,25 @@ export class AuthController {
 
     @Get('callback')
     async callback(@Res() response: Response, @Query('state') integrity: string, @Query('code') code?: string, @Query('error') error?: string, errorDescription?: string) {
-        this.authService.validateIntegrity(integrity).pipe(
-            map((valid) => {
-                if (!valid) {
-                    throw new ForbiddenException();
-                }
+        let attemptId = await this.authService.validateIntegrity(integrity);
 
-                if (!error) {
-                    return response.redirect(this.authService.getSuccessUri(integrity, code));
-                }
+        if (!error) {
+            return response.redirect(await this.authService.getSuccessUri(attemptId, code));
+        }
 
 
-                if (error === 'access_denied') {
-                    return response.redirect(this.authService.getFailureUri(integrity, error, errorDescription));
-                }
+        if (error === 'access_denied') {
+            return response.redirect(await this.authService.getFailureUri(attemptId, error, errorDescription));
+        }
 
-                console.log(error);
-                throw new InternalServerErrorException();
-            })
-        );
+        console.log(error);
+        throw new InternalServerErrorException(); 
     }
 
     @Post('token')
-    token(@Body('code') code: string) {
-        return this.authService.login(code).pipe(
-            map((result) => {
-                return { 'access_token': result };
-            })
-        );
+    async token(@Body('code') code: string) {
+        return {
+            'access_token': await this.authService.login(code)
+        };
     }
 }

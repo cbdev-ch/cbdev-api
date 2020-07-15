@@ -13,6 +13,6 @@ export class UserController {
 
     @Get('@me')
     me(@Req() req) {
-        return req['user'];
+        return this.userService.getByDiscordId(req['user'].id);
     }
 }

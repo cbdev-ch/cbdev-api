@@ -7,11 +7,19 @@ import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
 import { JwtAuthStrategy } from './jwt-auth.strategy';
+import { MongooseModule } from '@nestjs/mongoose';
+import { LoginAttempt, LoginAttemptSchema } from './login-attempt.schema';
+import { UserDocument, UserSchema } from 'src/user/user.schema';
+
+require('dotenv').config();
 
 @Module({
   imports: [
     HttpModule,
-    /*MongooseModule.forFeature([]),*/
+    MongooseModule.forFeature([
+      { name: LoginAttempt.name, schema: LoginAttemptSchema, collection: 'loginAttempts' },
+      { name: UserDocument.name, schema: UserSchema, collection: 'users' },
+    ]),
     PassportModule.register({
       defaultStrategy: 'jwt'
     }),

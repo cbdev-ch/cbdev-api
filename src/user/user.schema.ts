@@ -2,9 +2,21 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class User extends Document {
+export class UserDocument extends Document {
   @Prop()
-  username: string;
+  discordId: string;
+
+  @Prop()
+  discordToken: string;
+
+  @Prop()
+  discordTokenExpiresAt: Date;
+
+  @Prop()
+  discordRefreshToken: string;
+
+  @Prop()
+  discordScopes: string[];
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(UserDocument);
