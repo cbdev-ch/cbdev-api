@@ -1,8 +1,10 @@
-import { Controller, Get, Res, Query, InternalServerErrorException, Post, ForbiddenException, Body } from '@nestjs/common';
+import { Controller, Get, Res, Query, InternalServerErrorException, Post, ForbiddenException, Body, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { map } from 'rxjs/operators';
 import { Response } from 'express';
+import { ApiTags, ApiOkResponse, ApiProperty, ApiExcludeEndpoint, ApiParam } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
     constructor(private authService: AuthService) {
@@ -13,6 +15,7 @@ export class AuthController {
         response.redirect(this.authService.getLoginUri(integrity, callbackUri));
     }
 
+    @ApiExcludeEndpoint()
     @Get('callback')
     async callback(@Res() response: Response, @Query('state') integrity: string, @Query('code') code?: string, @Query('error') error?: string, errorDescription?: string) {
         let attemptId = await this.authService.validateIntegrity(integrity);

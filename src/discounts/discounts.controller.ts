@@ -1,7 +1,9 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { DiscountsService } from './discounts.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('discounts')
 @Controller('discounts')
 export class DiscountsController {
 
