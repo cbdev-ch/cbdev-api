@@ -1,27 +1,22 @@
 import { Injectable, UnsupportedMediaTypeException } from '@nestjs/common';
-import PDF2Pic from 'pdf2pic';
-import path from 'path';
-import { config } from 'dotenv/types';
+
+import path, {join} from 'path';
+import {Converter} from "./Converter";
+import {switchMap} from "rxjs/operators";
 
 @Injectable()
 export class ConverterService {
 
     async toImage(file) {
-        console.log(file);
-        console.log(path.dirname(file['path']));
-        console.log(path.basename(file['path'], path.extname(file['path'])));
+
         switch (file['mimetype']) {
             case 'application/pdf':
-                await new PDF2Pic({
-                    density: 150,
-                    savedir: path.dirname(file['path']),
-                    //savename: path.basename(file['path'], path.extname(file['path'])),
-                    savename: path.basename(file['path']),
-                    format: "png",
-                    size: '1240x1754'
-                }).convert(file['path']);
 
-                return 'test';
+                let converter = new Converter(file);
+
+                return converter.getFileResolution().pipe(switchMap(specs =>
+                    converter.getImage(specs, converter.filePath)
+                ));
 
             default:
                 throw new UnsupportedMediaTypeException();

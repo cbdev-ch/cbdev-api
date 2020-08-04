@@ -1,7 +1,7 @@
 import { Controller, Post, UseInterceptors, UploadedFile, BadRequestException, Get } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {FileInterceptor, FilesInterceptor, MulterModule} from '@nestjs/platform-express';
 import { ConverterService } from './converter.service';
-import PDF2Pic from 'pdf2pic';
+import {diskStorage} from 'multer';
 
 @Controller('converter')
 export class ConverterController {
@@ -11,22 +11,20 @@ export class ConverterController {
     }
 
     @Post('image')
-    @UseInterceptors(FileInterceptor('file'))
+    @UseInterceptors(FileInterceptor('file', {
+        storage: diskStorage({
+            destination: function (req, file, cb) {
+                cb(null, './uploads')
+            },
+            filename: (req, file, cb) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+                cb(null, file.fieldname + '-' + uniqueSuffix + '.pdf')
+            }
+        })
+    }))
     toImage(@UploadedFile('file') file) {
         if (!file) throw new BadRequestException('File missing');
         return this.converterService.toImage(file);
     }
 
-    @Get('test')
-    async test() {
-        await new PDF2Pic({
-            density: 150,
-            savedir: 'uploads',
-            savename: '8db9124b41756446ea3f7c124a20a6e3',
-            format: "png",
-            size: '1240x1754'
-        }).convert('uploads/8db9124b41756446ea3f7c124a20a6e3.pdf');
-
-        return 'test';
-    }
 }
