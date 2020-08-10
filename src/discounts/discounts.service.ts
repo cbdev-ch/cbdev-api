@@ -4,7 +4,7 @@ import * as mongoose from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Product } from './product.model';
-import { map, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { AxiosResponse } from 'axios';
 
 @Injectable()
@@ -33,11 +33,14 @@ export class DiscountsService {
                         catchError((error, caught) => {
                             let response: AxiosResponse = error.response;
 
-                            if (response.status === 404) {
+                            if ((response.status === 404) || (response.status === 403)) {
                                 return caught;
                             }
 
-                            console.log(error);
+                            if(process.env.DEV_MODE){
+                                console.log(error);
+                            }
+
                             return caught;
                         })
                     ).subscribe((response) => {
