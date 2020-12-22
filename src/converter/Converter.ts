@@ -1,12 +1,14 @@
-import {from, Observable} from "rxjs";
-import PDFParser from 'pdf2json';
-import PDF2Pic from 'pdf2pic';
-import {join} from "path";
-import {File} from "./models/file.model";
+import {from, Observable} from 'rxjs';
+//import PDFParser from 'pdf2json';
+//import PDF2Pic from 'pdf2pic';
+import {join} from 'path';
+import {File} from './models/file.model';
 
 export type PDFSpecs = {Pages:{Height:number}[],Width: number}
 
 export class Converter {
+
+    /*
 
     constructor(private file: File) {  }
 
@@ -29,7 +31,7 @@ export class Converter {
         const height = specs.Pages[0].Height * 24;
 
         let pdf2pic = new PDF2Pic({
-            density: 100,
+            density: 600,
             savedir: join(__dirname, '..', '..', 'uploads'),
             savename: this.file.filename,
             format: 'png',
@@ -39,7 +41,9 @@ export class Converter {
         return from(pdf2pic.convert(filePath));
     }
 
+
     get filePath(){
         return join(__dirname, '..', '..', this.file.path);
     }
+     */
 }
