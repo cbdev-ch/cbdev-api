@@ -1,5 +1,5 @@
 FROM node:12.18.3-buster
-MAINTAINER CBDEV
+LABEL maintainer="info@cbdev.ch"
 WORKDIR /app
 RUN apt-get update && apt-get install -y \
     imagemagick \

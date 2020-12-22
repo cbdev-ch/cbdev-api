@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { Product } from './product.model';
 import { catchError } from 'rxjs/operators';
 import { AxiosResponse } from 'axios';
+import moment from 'moment';
 
 @Injectable()
 export class DiscountsService {
@@ -51,7 +52,7 @@ export class DiscountsService {
                                 product.isAvailable = !response.data.includes(product.notAvailableSearchString);
                             }
 
-                            product.updatedAt = new Date();
+                            product.updatedAt = moment().format('DD/MM/YYYY HH:mm:ss');
 
                             product.save();
                         }

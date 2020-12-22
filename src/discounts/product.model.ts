@@ -12,7 +12,7 @@ export const ProductSchema =  new Schema({
     isAvailable: {type: Boolean},
     url: {type: String},
     active: {type: Boolean},
-    updatedAt: {type: Date, default: Date.now}
+    updatedAt: {type: String}
 
 }, { collection: 'Product' });
 
@@ -29,5 +29,5 @@ export interface Product extends Document {
     isAvailable: boolean;
     url: string;
     active: boolean;
-    updatedAt: Date;
+    updatedAt: String;
 }
