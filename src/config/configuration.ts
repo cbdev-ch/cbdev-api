@@ -1,3 +1,17 @@
+import { prototype } from "module";
+import { type } from "os";
+
+const env = process.env;
+
 export default () => ({
-    url: `mongodb://${process.env.MONGODB_USER}:${encodeURIComponent(process.env.MONGODB_PASSWORD)}@${process.env.MONGODB_HOST1}:${process.env.MONGODB_PORT1},${process.env.MONGODB_HOST2}:${process.env.MONGODB_PORT2},${process.env.MONGODB_HOST3}:${process.env.MONGODB_PORT3}/${process.env.MONGODB_DATABASE}?replicaSet=${process.env.MONGODB_REPLICA_SET}?authSource=${process.env.MONGODB_AUTH_SOURCE}`
+    versionPrefix: env.VERSION_PREFIX,
+    port: env.DEV_MODE ? env.DEV_API_PORT : env.API_PORT,
+    discordClientId: env.DISCORD_CLIENT_ID,
+    discordClientSecret: env.DISCORD_CLIENT_SECRET,
+    baseUrl: (env.DEV_MODE
+    ? env.DEV_API_PROTOCOL + "://" + env.DEV_API_HOST + ":" + env.DEV_API_PORT
+    : env.API_PROTOCOL + "://" + env.API_HOST + ":" + env.API_PORT)
+    + "/" + env.VERSION_PREFIX,
+    discordEndpoint: env.DISCORD_ENDPOINT,
+    discordCDN: env.DISCORD_CDN,
 });
