@@ -36,7 +36,7 @@
     "@types/qs": "^6.9.3",
     "dotenv": "^8.2.0",
     "gm": "^1.23.1",
-    "moment": "^2.27.0",
+    "moment": "^2.29.2",
     "mongoose": "^5.11.8",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
