@@ -43,7 +43,7 @@
     "passport-oauth": "^1.0.0",
     "path": "^0.12.7",
     "pdf-image": "^2.0.0",
-    "qs": "^6.9.4",
+    "qs": "^6.9.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.5",
